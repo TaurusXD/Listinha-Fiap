@@ -9,5 +9,4 @@ class ListinhaApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

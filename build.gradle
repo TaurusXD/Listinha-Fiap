@@ -13,9 +13,17 @@ repositories {
 }
 
 dependencies {
+	//Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	//Doc
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+	//Database
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'com.h2database:h2:1.4.197'
+	implementation 'com.h2database:h2:2.1.214'
+
+	//Tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
