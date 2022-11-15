@@ -1,0 +1,7 @@
+server:
+port: 8088
+spring:
+datasource:
+url: jdbc:h2:~/Documents/fiapdatabase;DB_COLSE_ON_EXIT=FALSE
+username: fiap
+password: fiap
