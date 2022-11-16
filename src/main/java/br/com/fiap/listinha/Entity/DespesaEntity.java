@@ -1,15 +1,20 @@
 package br.com.fiap.listinha.Entity;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @Table(name = "TB_DESPESAS")
+@EntityListeners(AuditingEntityListener.class)
 public class DespesaEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column
@@ -29,6 +34,15 @@ public class DespesaEntity {
 
     @Column
     private String descricao;
+
+    @Column(updatable = false,nullable = false)
+    @CreatedDate
+    private Date createdDate;
+
+    @Column(updatable = true, nullable = false)
+    @LastModifiedDate
+    private Date lastModifiedDate;
+
 
     public Integer getId() {
         return id;
@@ -84,5 +98,21 @@ public class DespesaEntity {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

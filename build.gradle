@@ -22,6 +22,7 @@ dependencies {
 	//Database
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'com.h2database:h2:2.1.214'
+	implementation 'org.flywaydb:flyway-core'
 
 	//Tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

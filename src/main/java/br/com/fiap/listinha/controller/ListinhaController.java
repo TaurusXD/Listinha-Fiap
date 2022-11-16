@@ -1,27 +1,13 @@
 package br.com.fiap.listinha.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import br.com.fiap.listinha.dto.DespesaDTO;
 import br.com.fiap.listinha.dto.NovaDespesaDTO;
 import br.com.fiap.listinha.dto.NovoValorDTO;
 import br.com.fiap.listinha.service.DespesasService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("despesas")
@@ -35,20 +21,21 @@ public class ListinhaController{
 	
 	}
 	
-	@GetMapping 
+	@GetMapping
 	public List<DespesaDTO> getDespesas(
-			@RequestParam String id
+			@RequestParam Integer id
 	){
 		return despesaService.listarDespesas(id);
 	}
-	
+
 	@GetMapping("{id}")
-	public DespesaDTO getCategoriaById(
-			@PathVariable(name = "id") String id
+	public DespesaDTO listarDespesasPorCategoria(
+			@PathVariable(name = "categoria") String categoria
 	) {
-		return despesaService.buscarDespesaPorId(id);
+		return (DespesaDTO) despesaService.listarDespesasPorCategoria(categoria);
 	}
-	
+
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public DespesaDTO createDespesa(
@@ -58,16 +45,18 @@ public class ListinhaController{
 	}
 	
 	@PatchMapping("{id}")
+	@ResponseStatus(HttpStatus.ACCEPTED)
 	public DespesaDTO updateDespesa(
 			@RequestBody NovaDespesaDTO novaDespesaDTO,
-			@PathVariable String id
+			@PathVariable Integer id
 	) {
 		return despesaService.atualizar(id, novaDespesaDTO);
 	}
 	@PutMapping ("{id}")
+	@ResponseStatus(HttpStatus.ACCEPTED)
 	public DespesaDTO updateValorDaDespesa(
 			@RequestBody NovoValorDTO novoValorDTO,
-			@PathVariable String id
+			@PathVariable Integer id
 	) {
 		
 		return despesaService.atualizarPreco(id, novoValorDTO);
@@ -75,7 +64,7 @@ public class ListinhaController{
 	@DeleteMapping("{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteDespesa(
-			@PathVariable String id
+			@PathVariable Integer id
 	) {
 		despesaService.deletarDespesa(id);
 	}
