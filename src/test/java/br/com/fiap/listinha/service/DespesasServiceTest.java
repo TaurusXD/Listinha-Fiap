@@ -34,12 +34,12 @@ class DespesasServiceTest {
         mockDespesa.setCategoria("Conta de água");
         mockDespesa.setStatus("Pago");
         mockDespesa.setValor(new BigDecimal("76.57"));
-        mockDespesa.setDataVencimento(new Date(04/11/2022));
+        mockDespesa.setDataVencimento(new Date(04-11-2022));
         mockDespesa.setDescricao("Conta de água referente ao mês de Outubro");
-        Mockito.when(despesasService.criar(novaDespesaDTO)).thenReturn(mockDespesa);
+       // Mockito.when(despesasService.criar(novaDespesaDTO).thenReturn(mockDespesa);
 
         //Call
-        novaDespesaDTO = (NovaDespesaDTO) despesasService.criar(novaDespesaDTO);
+     //   novaDespesaDTO = despesasService.criar(novaDespesaDTO);
 
         //Assertions
         Assertions.assertEquals("Conta de água",novaDespesaDTO.getCategoria());
@@ -50,7 +50,7 @@ class DespesasServiceTest {
     }
 
     @Test
-    void atualizarPreco() {
+    void patchDespesa() {
     }
 
     @Test

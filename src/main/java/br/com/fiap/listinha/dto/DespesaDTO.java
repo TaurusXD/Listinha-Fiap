@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class DespesaDTO {
-	
+
 	private Integer id;
 	private String name;
 	private String categoria;

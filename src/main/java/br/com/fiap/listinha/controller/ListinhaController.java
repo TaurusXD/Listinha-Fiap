@@ -2,7 +2,6 @@ package br.com.fiap.listinha.controller;
 
 import br.com.fiap.listinha.dto.DespesaDTO;
 import br.com.fiap.listinha.dto.NovaDespesaDTO;
-import br.com.fiap.listinha.dto.NovoValorDTO;
 import br.com.fiap.listinha.service.DespesasService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,19 +21,37 @@ public class ListinhaController{
 	}
 	
 	@GetMapping
-	public List<DespesaDTO> getDespesas(
-			@RequestParam Integer id
-	){
-		return despesaService.listarDespesas(id);
+	@ResponseStatus(HttpStatus.OK)
+	public List<DespesaDTO> getDespesas(){
+		return despesaService.listarDespesas();
 	}
 
-	@GetMapping("{id}")
-	public DespesaDTO listarDespesasPorCategoria(
-			@PathVariable(name = "categoria") String categoria
-	) {
-		return (DespesaDTO) despesaService.listarDespesasPorCategoria(categoria);
+	@GetMapping("/categoria/{categoria}")
+	@ResponseStatus(HttpStatus.OK)
+	public List<DespesaDTO> buscarDespesaPorCategoria(@PathVariable String categoria) {
+
+		return despesaService.listarDespesasPorCategoria(categoria);
+	}
+	@GetMapping("id/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public DespesaDTO buscarDespesaPorId(@RequestParam Integer id) {
+
+		return despesaService.buscarDespesaPorId(id);
 	}
 
+	@GetMapping("name/{name}")
+	@ResponseStatus(HttpStatus.OK)
+	public List<DespesaDTO> buscarDespesasPorNome(@PathVariable String name) {
+
+		return despesaService.buscarDespesasPorNome(name);
+	}
+
+	@GetMapping("status/{status}")
+	@ResponseStatus(HttpStatus.OK)
+	public List<DespesaDTO> buscarDespesasPorStatus(@PathVariable String status) {
+
+		return despesaService.buscarDespesasPorStatus(status);
+	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -44,24 +61,24 @@ public class ListinhaController{
 		return despesaService.criar(novaDespesaDTO);
 	}
 	
-	@PatchMapping("{id}")
+	@PatchMapping("id/{id}")
 	@ResponseStatus(HttpStatus.ACCEPTED)
 	public DespesaDTO updateDespesa(
 			@RequestBody NovaDespesaDTO novaDespesaDTO,
 			@PathVariable Integer id
 	) {
-		return despesaService.atualizar(id, novaDespesaDTO);
+		return despesaService.patchDespesa(id, novaDespesaDTO);
 	}
-	@PutMapping ("{id}")
-	@ResponseStatus(HttpStatus.ACCEPTED)
-	public DespesaDTO updateValorDaDespesa(
-			@RequestBody NovoValorDTO novoValorDTO,
+	@PutMapping ("id/{id}")
+	@ResponseStatus(HttpStatus.CREATED)
+	public DespesaDTO updateDaDespesa(
+			@RequestBody NovaDespesaDTO novaDespesaDTO,
 			@PathVariable Integer id
 	) {
 		
-		return despesaService.atualizarPreco(id, novoValorDTO);
+		return despesaService.atualizar(id, novaDespesaDTO);
 	}
-	@DeleteMapping("{id}")
+	@DeleteMapping("id/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteDespesa(
 			@PathVariable Integer id

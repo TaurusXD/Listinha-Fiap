@@ -4,10 +4,8 @@ import br.com.fiap.listinha.Entity.DespesaEntity;
 import br.com.fiap.listinha.Repository.DespesaRepository;
 import br.com.fiap.listinha.dto.DespesaDTO;
 import br.com.fiap.listinha.dto.NovaDespesaDTO;
-import br.com.fiap.listinha.dto.NovoValorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -21,19 +19,19 @@ public class DespesasServiceImpl implements DespesasService {
 	}
 
 	@Override
-	public List<DespesaDTO> listarDespesas(@RequestParam(required =false) Integer id) {
+	public List<DespesaDTO> listarDespesas() {
 		List<DespesaEntity> DespesaList;
 		DespesaList = despesaRepository.findAll();
 		return DespesaList
 				.stream()
 				.map(entity ->{
 					DespesaDTO dto = new DespesaDTO();
-					dto.setName(entity.getName());
 					dto.setId(entity.getId());
+					dto.setName(entity.getName());
 					dto.setCategoria(entity.getCategoria());
 					dto.setStatus(entity.getStatus());
-					dto.setDataVencimento(entity.getDataVencimento());
 					dto.setValor(entity.getValor());
+					dto.setDataVencimento(entity.getDataVencimento());
 					dto.setDescricao(entity.getDescricao());
 					return dto;
 				}).collect(Collectors.toList());
@@ -42,7 +40,7 @@ public class DespesasServiceImpl implements DespesasService {
 	//@Override
 	public List<DespesaDTO> listarDespesasPorCategoria(String categoria) {
 		List<DespesaEntity> DespesaList;
-		DespesaList = despesaRepository.findAll();
+		DespesaList = despesaRepository.findAllByCategoriaContainingIgnoreCase(categoria);
 		return DespesaList
 				.stream()
 				.map(entity ->{
@@ -51,13 +49,49 @@ public class DespesasServiceImpl implements DespesasService {
 					dto.setName(entity.getName());
 					dto.setCategoria(entity.getCategoria());
 					dto.setStatus(entity.getStatus());
-					dto.setDataVencimento(entity.getDataVencimento());
 					dto.setValor(entity.getValor());
+					dto.setDataVencimento(entity.getDataVencimento());
 					dto.setDescricao(entity.getDescricao());
 					return dto;
 				}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<DespesaDTO> buscarDespesasPorNome(String name) {
+			List<DespesaEntity> DespesaList;
+			DespesaList = despesaRepository.findAllByNameContainingIgnoreCase(name);
+			return DespesaList
+					.stream()
+					.map(entity ->{
+						DespesaDTO dto = new DespesaDTO();
+						dto.setId(entity.getId());
+						dto.setName(entity.getName());
+						dto.setCategoria(entity.getCategoria());
+						dto.setStatus(entity.getStatus());
+						dto.setValor(entity.getValor());
+						dto.setDataVencimento(entity.getDataVencimento());
+						dto.setDescricao(entity.getDescricao());
+						return dto;
+					}).collect(Collectors.toList());
+		}
+	@Override
+	public List<DespesaDTO> buscarDespesasPorStatus(String status) {
+		List<DespesaEntity> DespesaList;
+		DespesaList = despesaRepository.findAllByStatusContainingIgnoreCase(status);
+		return DespesaList
+				.stream()
+				.map(entity ->{
+					DespesaDTO dto = new DespesaDTO();
+					dto.setId(entity.getId());
+					dto.setName(entity.getName());
+					dto.setCategoria(entity.getCategoria());
+					dto.setStatus(entity.getStatus());
+					dto.setValor(entity.getValor());
+					dto.setDataVencimento(entity.getDataVencimento());
+					dto.setDescricao(entity.getDescricao());
+					return dto;
+				}).collect(Collectors.toList());
+	}
 	@Override
 	public DespesaDTO buscarDespesaPorId(Integer id) {
 		DespesaEntity entity = despesaRepository.findById(id)
@@ -67,28 +101,20 @@ public class DespesasServiceImpl implements DespesasService {
 		dto.setName(entity.getName());
 		dto.setCategoria(entity.getCategoria());
 		dto.setStatus(entity.getStatus());
-		dto.setDataVencimento(entity.getDataVencimento());
 		dto.setValor(entity.getValor());
+		dto.setDataVencimento(entity.getDataVencimento());
 		dto.setDescricao(entity.getDescricao());
 		return dto;
 	}
-
-	/*
-	@Override
-	public DespesaDTO buscarDespesaPorId(Integer id) {
-		Despesa despesa = getDespesaById(id);
-		return new DespesaDTO(Despesa);
-	}
-	*/
 
 	@Override
 	public DespesaDTO criar(NovaDespesaDTO novaDespesaDTO) {
 		DespesaEntity entity = new DespesaEntity();
 		entity.setName((novaDespesaDTO.getName()));
-		entity.setCategoria(novaDespesaDTO.getDescricao());
-		entity.setDataVencimento(novaDespesaDTO.getDataVencimento());
+		entity.setCategoria(novaDespesaDTO.getCategoria());
 		entity.setStatus(novaDespesaDTO.getStatus());
 		entity.setValor(novaDespesaDTO.getValor());
+		entity.setDataVencimento(novaDespesaDTO.getDataVencimento());
 		entity.setDescricao(novaDespesaDTO.getDescricao());
 
 		DespesaEntity savedEntity = despesaRepository.save(entity);
@@ -98,8 +124,8 @@ public class DespesasServiceImpl implements DespesasService {
 		dto.setName(entity.getName());
 		dto.setCategoria(entity.getCategoria());
 		dto.setStatus(entity.getStatus());
-		dto.setDataVencimento(entity.getDataVencimento());
 		dto.setValor(entity.getValor());
+		dto.setDataVencimento(entity.getDataVencimento());
 		dto.setDescricao(entity.getDescricao());
 		return dto;
 	}
@@ -107,28 +133,59 @@ public class DespesasServiceImpl implements DespesasService {
 	public DespesaDTO atualizar(Integer id, NovaDespesaDTO novaDespesaDTO) {
 		DespesaEntity entity = despesaRepository.findById(id)
 				.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
-		entity.setCategoria(novaDespesaDTO.getDescricao());
-		entity.setDataVencimento(novaDespesaDTO.getDataVencimento());
+		entity.setName((novaDespesaDTO.getName()));
+		entity.setCategoria(novaDespesaDTO.getCategoria());
 		entity.setStatus(novaDespesaDTO.getStatus());
 		entity.setValor(novaDespesaDTO.getValor());
+		entity.setDataVencimento(novaDespesaDTO.getDataVencimento());
 		entity.setDescricao(novaDespesaDTO.getDescricao());
 
 		DespesaEntity savedEntity = despesaRepository.save(entity);
 
 		DespesaDTO dto = new DespesaDTO();
-		dto.setId(entity.getId());
-		dto.setCategoria(entity.getCategoria());
-		dto.setStatus(entity.getStatus());
-		dto.setDataVencimento(entity.getDataVencimento());
-		dto.setValor(entity.getValor());
-		dto.setDescricao(entity.getDescricao());
+		dto.setId(savedEntity.getId());
+		dto.setName(savedEntity.getName());
+		dto.setCategoria(savedEntity.getCategoria());
+		dto.setStatus(savedEntity.getStatus());
+		dto.setValor(savedEntity.getValor());
+		dto.setDataVencimento(savedEntity.getDataVencimento());
+		dto.setDescricao(savedEntity.getDescricao());
 		return dto;
 	}
 
 	@Override
-	public DespesaDTO atualizarPreco(Integer id, NovoValorDTO novaDespesaDTO) {
-		// TODO Auto-generated method stub
-		return null;
+	public DespesaDTO patchDespesa(Integer id, NovaDespesaDTO novaDespesaDTO) {
+		DespesaEntity entity = despesaRepository.findById(id)
+				.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		if(null != novaDespesaDTO.getName()){
+		entity.setName((novaDespesaDTO.getName()));
+		}
+		if(null != novaDespesaDTO.getCategoria()) {
+			entity.setCategoria(novaDespesaDTO.getCategoria());
+		}
+		if(null != novaDespesaDTO.getStatus()) {
+			entity.setStatus(novaDespesaDTO.getStatus());
+		}
+		if(null != novaDespesaDTO.getValor()) {
+			entity.setValor(novaDespesaDTO.getValor());
+		}
+		if(null != novaDespesaDTO.getDataVencimento()) {
+			entity.setDataVencimento(novaDespesaDTO.getDataVencimento());
+		}
+		if(null != novaDespesaDTO.getDescricao()) {
+			entity.setDescricao(novaDespesaDTO.getDescricao());
+		}
+		DespesaEntity savedEntity = despesaRepository.save(entity);
+
+		DespesaDTO dto = new DespesaDTO();
+		dto.setId(savedEntity.getId());
+		dto.setName(savedEntity.getName());
+		dto.setCategoria(savedEntity.getCategoria());
+		dto.setStatus(savedEntity.getStatus());
+		dto.setValor(savedEntity.getValor());
+		dto.setDataVencimento(savedEntity.getDataVencimento());
+		dto.setDescricao(savedEntity.getDescricao());
+		return dto;
 	}
 
 	@Override
